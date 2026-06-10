@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\combos\" />
+    <Folder Include="wwwroot\images\combos\" />
     <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 
