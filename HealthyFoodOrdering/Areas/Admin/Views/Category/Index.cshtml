@@ -1,0 +1,131 @@
+@model IEnumerable<HealthyFoodOrdering.Models.Category>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-white py-4 border-0">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h2 class="fw-bold text-success mb-1">
+                        <i class="fas fa-layer-group me-2"></i>Quản Lý Danh Mục
+                    </h2>
+                    <p class="text-muted mb-0">Quản lý nhóm món ăn hiển thị trên hệ thống.</p>
+                </div>
+
+                <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn btn-success px-4 rounded-pill shadow-sm">
+                    <i class="fas fa-plus-circle me-2"></i>Thêm danh mục
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4" style="width: 100px;">Ảnh</th>
+                            <th>Tên danh mục</th>
+                            <th>Mô tả</th>
+                            <th class="text-center">Số món</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-center pe-4">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/default-food.png" : item.ImageUrl)"
+                                             alt="@item.Name"
+                                             class="rounded-3 shadow-sm"
+                                             style="width: 70px; height: 70px; object-fit: cover;"
+                                             onerror="this.src='/images/default-food.png'" />
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">@item.Name</div>
+                                        <small class="text-muted">ID: #@item.Id</small>
+                                    </td>
+                                    <td style="max-width: 360px;">
+                                        <span class="text-muted">@item.Description</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2 rounded-pill">
+                                            @(item.Products?.Count ?? 0) món
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">Đang hiển thị</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-pill">Đang ẩn</span>
+                                        }
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <div class="btn-group shadow-sm rounded-pill overflow-hidden">
+                                            <a asp-area="Admin" asp-controller="Category" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-white text-info border-end" title="Chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="Category" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-white text-primary border-end" title="Sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-white text-danger" title="Xóa">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="fas fa-folder-open fa-2x mb-3 d-block"></i>
+                                    Chưa có danh mục nào.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white py-3 border-0 text-center">
+            <p class="text-muted small mb-0">Hiển thị @Model.Count() danh mục trong hệ thống</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: #6c757d;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .table tbody td {
+        padding-top: 1.2rem;
+        padding-bottom: 1.2rem;
+    }
+
+    .btn-white {
+        background-color: #fff;
+    }
+
+    .btn-white:hover {
+        background-color: #f8f9fa;
+    }
+</style>

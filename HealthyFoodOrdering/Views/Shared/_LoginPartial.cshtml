@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using HealthyFoodOrdering.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="d-flex flex-row align-items-center gap-3" style="white-space: nowrap !important; flex-wrap: nowrap !important;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+    
+        @if (User.IsInRole("Admin"))
+        {
+            <button type="button" class="btn btn-warning fw-bold d-flex align-items-center justify-content-center px-3"
+                    style="line-height: 45px !important; height: 45px !important; border-radius: 5px; font-size: 1rem; padding: 0 !important;"
+                    onclick="window.location.href='@Url.Action("Index", "Admin", new { area = "Admin" })'">
+                Admin Panel
+            </button>
+        }
+
+        <div style="display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 15px !important; white-space: nowrap !important;">
+            
+            <button type="button" class="secondary-btn text-decoration-none fw-bold"
+                    style="display: inline-flex !important; align-items: center !important; justify-content: center !important; height: 40px !important; cursor: pointer; border: 2px solid #198754 !important; background: transparent !important; color: #198754 !important; font-size: 1rem !important; padding: 0 20px !important; border-radius: 20px !important; margin: 0 !important; white-space: nowrap !important;"
+                    onclick="window.location.href='@Url.Action("Logout", "Account", new { area = "" })'">
+                Logout
+            </button>
+
+            <span class="text-dark fw-bold" style="font-size: 1rem !important; cursor: default !important;">
+                Hi, @(user?.FullName ?? User.Identity?.Name)!
+            </span>
+
+            @if (!string.IsNullOrEmpty(user?.Avatar))
+            {
+                <img src="/images/avatars/@user.Avatar"
+                     style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #198754; transition: 0.2s;"
+                     onclick="window.location.href='@Url.Action("Profile", "Account", new { area = "" })'"
+                     title="Xem hồ sơ cá nhân"
+                     onmouseover="this.style.transform='scale(1.1)';"
+                     onmouseout="this.style.transform='scale(1)';" />
+            }
+            else
+            {
+                <i class="fas fa-user-circle"
+                   style="font-size: 1.8rem !important; color: #198754 !important; cursor: pointer !important; transition: transform 0.2s ease; display: inline-flex !important; align-items: center !important;"
+                   onclick="window.location.href='@Url.Action("Profile", "Account", new { area = "" })'"
+                   title="Xem hồ sơ cá nhân"
+                   onmouseover="this.style.transform='scale(1.2)';"
+                   onmouseout="this.style.transform='scale(1)';"></i>
+            }
+
+        </div>
+    }
+    else
+    {
+        <button type="button" class="secondary-btn text-decoration-none fw-bold" style="height: 45px; width: 110px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.location.href='@Url.Action("Login", "Account", new { area = "" })'">Login</button>
+        <button type="button" class="primary-btn text-decoration-none fw-bold" style="height: 45px; width: 120px; display: inline-flex; align-items: center; justify-content: center;" onclick="window.location.href='@Url.Action("Login", "Account", new { area = "" })?tab=register'">Register</button>
+    }
+</div>

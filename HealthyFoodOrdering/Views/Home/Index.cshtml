@@ -1,0 +1,140 @@
+﻿@{
+    ViewData["Title"] = "Healthy Food";
+}
+
+<section class="hero" id="home">
+    <div class="container hero-grid">
+        <div class="hero-text">
+            <div class="badge">✨ Student Meal Ordering</div>
+
+            <h1>
+                Eat Fresh,<br />
+                <span>Feel Great</span><br />
+                Every Day
+            </h1>
+
+            <p>
+                Wholesome salad bowls, avocado toasts, smoothie bowls and organic
+                meals.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#menu" class="primary-btn text-decoration-none d-inline-block text-center" style="line-height:45px;">Browse Menu</a>
+                <a href="#about" class="secondary-btn text-decoration-none d-inline-block text-center" style="line-height:45px;">Learn More</a>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900" />
+        </div>
+    </div>
+</section>
+
+<section class="categories" id="categories">
+    <div class="container">
+        <div class="section-title">
+            <h2>Browse by Category</h2>
+            <p>Find exactly what you're craving</p>
+        </div>
+
+        <div class="menu-grid">
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var cat in (List<HealthyFoodOrdering.Models.Category>)ViewBag.Categories)
+                {
+                    <div class="food-card">
+                        <h3>@cat.Name</h3>
+                        <p>@cat.Description</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<section class="menu" id="menu">
+    <div class="container">
+        <div class="section-title">
+            <h2>Popular Menu</h2>
+            <p>Fresh meals prepared daily</p>
+        </div>
+
+        <div class="menu-grid" id="menuGrid"></div>
+            @if (ViewBag.PopularProducts != null)
+            {
+                foreach (var item in (List<HealthyFoodOrdering.Models.Product>)ViewBag.PopularProducts)
+                {
+                    <div class="food-card d-flex flex-column h-100">
+                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/default-food.png" : item.ImageUrl)"
+                             style="height:200px; object-fit:cover; border-radius:8px;"
+                             onerror="this.onerror=null;this.src='/images/default-food.png';" />
+                        <h3 class="mt-2">@item.Name</h3>
+                        <p class="text-muted text-sm flex-grow-1">@item.Description</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-bold text-success">@item.FinalPrice.ToString("N0") VNĐ</span>
+                            <a asp-controller="Cart"
+                                asp-action="AddProduct"
+                                asp-route-id="@item.Id"
+                                class="btn btn-success btn-sm rounded-pill px-3">
+                                Thêm món
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted fs-5">🌱 Hiện tại nhà hàng đang chuẩn bị món ăn mới, vui lòng quay lại sau!</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="about" id="about">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose Us</h2>
+            <p>Healthy meals made for students</p>
+        </div>
+
+        <div class="menu-grid">
+            <div class="food-card">
+                <h3>🌱 Organic Ingredients</h3>
+                <p>Fresh and healthy ingredients everyday.</p>
+            </div>
+
+            <div class="food-card">
+                <h3>⚡ Nutrition Balanced</h3>
+                <p>Meals designed for healthy student lifestyles.</p>
+            </div>
+
+            <div class="food-card">
+                <h3>🔄 Fresh Daily</h3>
+                <p>Prepared every morning with fresh products.</p>
+            </div>
+
+            <div class="food-card">
+                <h3>❤️ Affordable Prices</h3>
+                <p>Healthy food with budget friendly prices.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <h3>Your Order</h3>
+
+        <button onclick="toggleCart()">✖</button>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="cart-footer">
+        <h4>Total: $<span id="cartTotal">0.00</span></h4>
+
+        <button class="checkout-btn">Proceed to Checkout</button>
+    </div>
+</div>

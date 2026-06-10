@@ -1,0 +1,15 @@
+﻿@model HealthyFoodOrdering.Models.NutritionCombo
+<div class="container py-5 text-center">
+    <h2 class="text-danger">Bạn có chắc chắn muốn xóa combo?</h2>
+    <div class="card mx-auto" style="max-width: 400px;">
+        <div class="card-body">
+            <h4>@Model.ComboName</h4>
+            <p>Giá: @Model.TotalPrice.ToString("N0") VNĐ</p>
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Xác nhận Xóa</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>

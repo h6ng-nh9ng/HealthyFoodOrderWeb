@@ -1,0 +1,217 @@
+﻿@model HealthyFoodOrdering.Models.Order
+@using HealthyFoodOrdering.Models
+
+<div class="container mt-4">
+
+    <h2>Chi tiết đơn hàng #@Model.Id</h2>
+
+    <div class="mb-4">
+
+        @if (Model.Status == OrderStatus.Cancelled)
+        {
+            <span class="badge-status badge-cancelled">
+                Đơn hàng đã bị hủy
+            </span>
+        }
+        else
+        {
+            var currentIndex =
+                OrderStatus.Workflow.ToList()
+                .IndexOf(Model.Status);
+
+            @foreach (var step in OrderStatus.Workflow)
+            {
+                var stepIndex =
+                    OrderStatus.Workflow.ToList()
+                    .IndexOf(step);
+
+                @if (stepIndex <= currentIndex)
+                {
+                    <span class="@OrderStatus.GetBadgeClass(step)">
+                        @OrderStatus.GetDisplayName(step)
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-status badge-default">
+                        @OrderStatus.GetDisplayName(step)
+                    </span>
+                }
+            }
+        }
+
+    </div>
+
+    <div class="card order-info-card mb-4">
+        <div class="card-body p-4">
+
+            <p>
+                <strong>Người nhận:</strong>
+                @Model.ReceiverName
+            </p>
+
+            <p>
+                <strong>SĐT:</strong>
+                @Model.Phone
+            </p>
+
+            <p>
+                <strong>Địa chỉ:</strong>
+                @Model.Address
+            </p>
+
+            <p>
+                <strong>Thanh toán:</strong>
+                @Model.PaymentMethod
+            </p>
+
+            <p>
+                <strong>Trạng thái:</strong>
+
+                <span class="@OrderStatus.GetBadgeClass(Model.Status)">
+                    @OrderStatus.GetDisplayName(Model.Status)
+                </span>
+            </p>
+
+        </div>
+    </div>
+
+    <table class="table table-hover align-middle order-table">
+
+        <thead class="table-light">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>SL</th>
+                <th>Giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+
+                    <td>
+
+                        @if (item.Product != null)
+                        {
+                            <span class="food-badge">
+                                Món ăn
+                            </span>
+
+                            <span>
+                                @item.Product.Name
+                            </span>
+                        }
+                        else if (item.Combo != null)
+                        {
+                            <span class="combo-badge">
+                                Combo
+                            </span>
+
+                            <span>
+                                @item.Combo.ComboName
+                            </span>
+                        }
+
+                    </td>
+
+                    <td>
+                        @item.Quantity
+                    </td>
+
+                    <td>
+                        @item.Price.ToString("N0") VNĐ
+                    </td>
+
+                    <td>
+                        @((item.Price * item.Quantity).ToString("N0")) VNĐ
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <h4 class="fw-bold total-money mt-4">
+        Tổng tiền:
+        @Model.TotalAmount.ToString("N0") VNĐ
+    </h4>
+
+    <div class="mt-4">
+
+        <a asp-controller="Order"
+               asp-action="MyOrders"
+           class="btn btn-outline-success px-4">
+            Quay lại
+
+        </a>
+
+    </div>
+</div>
+<style>
+
+.food-badge {
+    background: #dcfce7;
+    color: #166534;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.combo-badge {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.card {
+    overflow: hidden;
+}
+
+.order-info-card {
+    border: none;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.order-table {
+background: white;
+border-radius: 18px;
+overflow: hidden;
+}
+
+.order-table thead {
+    background: #f8fafc;
+}
+
+.order-table th {
+    font-weight: 700;
+    color: #374151;
+}
+
+.order-table tbody tr:hover {
+    background: #f0fdf4;
+}
+
+.total-money {
+    color: #16a34a;
+    font-size: 28px;
+}
+
+</style>

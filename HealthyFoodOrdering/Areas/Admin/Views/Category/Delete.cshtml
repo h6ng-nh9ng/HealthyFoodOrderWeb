@@ -1,0 +1,68 @@
+@model HealthyFoodOrdering.Models.Category
+@{
+    ViewData["Title"] = "Xóa danh mục";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4">
+                    @if (Model == null)
+                    {
+                        <div class="text-center text-muted py-4">
+                            Không tìm thấy danh mục cần xóa.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center mb-4">
+                            <div class="text-danger mb-3">
+                                <i class="fas fa-exclamation-triangle fa-3x"></i>
+                            </div>
+                            <h3 class="fw-bold text-dark">Bạn muốn xóa danh mục này?</h3>
+                            <p class="text-muted mb-0">Hành động này sẽ xóa dữ liệu danh mục khỏi hệ thống.</p>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-4 mb-4 border">
+                            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/default-food.png" : Model.ImageUrl)"
+                                 alt="@Model.Name"
+                                 class="rounded-3 border"
+                                 style="width: 90px; height: 90px; object-fit: cover;"
+                                 onerror="this.src='/images/default-food.png'" />
+                            <div>
+                                <h5 class="fw-bold m-0 text-dark">@Model.Name</h5>
+                                <p class="text-muted small mt-2 mb-2">@Model.Description</p>
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success">Đang hiển thị</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Đang ẩn</span>
+                                }
+                            </div>
+                        </div>
+
+                        <form asp-area="Admin" asp-controller="Category" asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="btn btn-light border w-100 py-2 fw-semibold">
+                                        Không xóa
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">
+                                        Xác nhận xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

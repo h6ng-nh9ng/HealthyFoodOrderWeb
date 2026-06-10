@@ -1,0 +1,96 @@
+﻿@model HealthyFoodOrdering.Models.Product
+@{
+    ViewData["Title"] = "Chỉnh Sửa Món Ăn Hệ Thống";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-card">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h3 class="fw-bold text-dark m-0"><i class="fas fa-edit text-warning me-2"></i>Cập Nhật Món Ăn</h3>
+            <p class="text-muted m-0 small mt-1">Đang chỉnh sửa: <span class="text-success fw-bold">@Model.Name</span></p>
+        </div>
+        <a href="/Product" class="btn btn-outline-secondary px-3 py-2 rounded-3 text-sm fw-semibold">
+            <i class="fas fa-arrow-left me-1"></i> Hủy & Quay lại
+        </a>
+    </div>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label">Tên món ăn <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">Danh mục</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId" required></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Price" class="form-label">Giá gốc (VNĐ)</label>
+                        <input asp-for="Price" type="number" class="form-control" required />
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="DiscountPercent" class="form-label">Giảm giá (%)</label>
+                        <input asp-for="DiscountPercent" type="number" min="0" max="100" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label">Mô tả chi tiết</label>
+                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-4 border-start ps-lg-4">
+                <div class="p-3 rounded-4 mb-4" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                    <h6 class="fw-bold text-warning mb-3"><i class="fas fa-heartbeat me-1"></i>Điều chỉnh dinh dưỡng</h6>
+                    
+                    <div class="mb-2">
+                        <label class="form-label small text-muted mb-1">Calories (kcal)</label>
+                        <input asp-for="Calories" type="number" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small text-muted mb-1">Protein (g)</label>
+                        <input asp-for="Protein" type="number" step="0.1" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small text-muted mb-1">Carbs (g)</label>
+                        <input asp-for="Carbs" type="number" step="0.1" class="form-control form-control-sm" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small text-muted mb-1">Fat (g)</label>
+                        <input asp-for="Fat" type="number" step="0.1" class="form-control form-control-sm" />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label"><i class="fas fa-image me-1"></i>Ảnh hiện tại</label>
+                    <div class="mb-2">
+                        <img src="@Model.ImageUrl" class="img-thumbnail rounded-3" style="max-height: 120px; object-fit: cover;" />
+                    </div>
+                    <input type="file" name="imageFile" class="form-control" accept="image/*" />
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                    <label class="form-check-label fw-bold" for="IsActive">Hiện trên thực đơn người dùng</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-warning px-5 text-dark fw-bold" style="border-radius: 10px;">
+                <i class="fas fa-save me-2"></i>Lưu mọi thay đổi
+            </button>
+        </div>
+    </form>
+</div>

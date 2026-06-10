@@ -1,0 +1,198 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+  /* === THAY ĐỔI: Thêm ảnh nền ngày hội ẩm thực vào đây === */
+  background-image: url("../images/food2.jpg");
+  background-size: cover; /* Giúp ảnh phủ kín toàn bộ màn hình */
+  background-position: center; /* Căn ảnh luôn ở chính giữa */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */
+}
+
+.login-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+/* Hộp đăng nhập phong cách tối giản */
+.login-box {
+  /* === THAY ĐỔI: Chuyển sang trắng đục nhẹ và tăng bóng đổ để nổi bật trên nền vàng === */
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-box h2 {
+  color: #1e293b;
+  margin-bottom: 8px;
+  font-weight: 600;
+  /* Màu xanh cho chữ AppFood */
+  .brand-name {
+    color: #22c55e;
+    font-weight: 700; /* Làm chữ đậm lên một chút cho nổi bật */
+  }
+}
+
+.login-box .subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 35px;
+}
+
+/* Xử lý các ô nhập liệu dạng Floating Label */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+/* Khi click vào ô hoặc ô có chữ, viền sẽ đổi màu xanh dịu */
+.input-group input:focus,
+.input-group input:not(:placeholder-shown) {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+/* Hiệu ứng nhãn chữ bay lên */
+.input-group label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  padding: 0 4px;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+  top: 0;
+  font-size: 12px;
+  color: #22c55e;
+  font-weight: 500;
+}
+
+/* Nút ẩn/hiện mật khẩu */
+.toggle-password {
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+/* Thông báo lỗi */
+.error-message {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 5px;
+  display: block;
+  font-weight: 400;
+}
+
+/* Tùy chọn form (Ghi nhớ & Quên mật khẩu) */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #475569;
+}
+
+.remember-me input {
+  margin-right: 8px;
+  accent-color: #22c55e; /* Đổi màu checkbox */
+}
+
+.forgot-pass {
+  color: #22c55e;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-pass:hover {
+  text-decoration: underline;
+}
+
+/* Nút bấm Đăng nhập */
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.btn-login:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3);
+}
+
+/* Link đăng ký */
+.register-link {
+  margin-top: 25px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.register-link a {
+  color: #22c55e;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+/* Hiệu ứng ẩn/hiện và chuyển đổi form */
+.form-container {
+  transition: all 0.4s ease;
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Class dùng để ẩn Form */
+.form-container.hidden {
+  display: none;
+  opacity: 0;
+  transform: scale(0.95);
+}
+/* Phóng to chữ tiêu đề Healthy Food trong các form */
+.form-container h2 {
+  font-size: 28px; /* Tăng kích thước chữ to hơn (mặc định thường là 24px) */
+  font-weight: 600; /* Giúp chữ nét thanh đậm rõ ràng và hiện đại hơn */
+  letter-spacing: 0.5px; /* Giãn cách nhẹ giữa các chữ cái cho thoáng */
+  margin-bottom: 8px; /* Khoảng cách vừa phải với dòng phụ bên dưới */
+}

@@ -1,0 +1,260 @@
+﻿@model HealthyFoodOrdering.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="profile-page-wrapper">
+    <div class="profile-card">
+        <form asp-controller="Account" asp-action="UpdateProfile" method="post" enctype="multipart/form-data" id="profileForm">
+            
+            <div class="profile-card-header">
+                <div class="avatar-upload-container disabled-avatar" onclick="if(!this.classList.contains('disabled-avatar')) { document.getElementById('avatarFile').click(); }" title="Click để đổi ảnh đại diện">
+                    @if (!string.IsNullOrEmpty(Model?.Avatar))
+                    {
+                        <img id="avatarPreview" src="/images/avatars/@Model.Avatar" alt="Avatar" class="user-avatar-img" />
+                    }
+                    else
+                    {
+                        <img id="avatarPreview" src="https://ui-avatars.com/api/?name=@(Model?.FullName ?? "User")&background=198754&color=fff&size=128" alt="Avatar" class="user-avatar-img" />
+                    }
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <input type="file" id="avatarFile" name="avatarFile" accept="image/*" style="display: none;" onchange="previewImage(this);" />
+                
+                <h3 class="mt-2 text-white">@Model?.FullName</h3>
+                <p class="subtitle"><i class="fas fa-circle text-warning-custom"></i> Tài khoản đang hoạt động</p>
+            </div>
+            
+            <div class="profile-card-body">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert-box alert-success"><i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]</div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert-box alert-danger"><i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]</div>
+                }
+
+                <h4 class="section-title"><i class="fas fa-id-card"></i> Thông tin cá nhân</h4>
+                
+                <div class="custom-input-group">
+                    <label for="fullName">Họ và tên</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="fullName" name="fullName" value="@Model?.FullName" disabled />
+                    </div>
+                </div>
+
+                <div class="custom-input-group">
+                    <label for="email">Email đăng ký</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="email" name="email" value="@Model?.Email" disabled />
+                    </div>
+                </div>
+
+                <div class="custom-input-group">
+                    <label>Ngày sinh</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar input-icon"></i>
+                        <input type="date" name="dateOfBirth" value="@Model?.DateOfBirth?.ToString("yyyy-MM-dd")" disabled />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="custom-input-group">
+                            <label>Chiều cao (cm)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-ruler-vertical input-icon"></i>
+                                <input type="number" name="height" value="@Model?.Height" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="custom-input-group">
+                            <label>Cân nặng (kg)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-weight input-icon"></i>
+                                <input type="number" name="weight" value="@Model?.Weight" disabled />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-input-group">
+                    <label>Mục tiêu sức khỏe</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-bullseye input-icon"></i>
+                        <input type="text" name="fitnessGoal" value="@Model?.FitnessGoal" disabled />
+                    </div>
+                </div>
+
+                <div id="passwordSection" style="display: none;">
+                    <div class="password-change-section">
+                        <h4 class="section-title text-success" style="border-left-color: #ffc107;"><i class="fas fa-lock"></i> Đổi mật khẩu </h4>
+                    
+                    <div class="custom-input-group">
+                        <label for="currentPassword">Mật khẩu hiện tại</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-key input-icon"></i>
+                            <input type="password" id="currentPassword" name="currentPassword" placeholder="Nhập mật khẩu cũ" />
+                        </div>
+                    </div>
+                </div>
+                    <div class="custom-input-group">
+                        <label for="newPassword">Mật khẩu mới</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock-open input-icon"></i>
+                            <input type="password" id="newPassword" name="newPassword" placeholder="Tối thiểu 6 ký tự" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-action-buttons">  
+                    <button type="button" id="btnEdit" class="btn-edit-profile" onclick="enableEditMode()">
+                        <i class="fas fa-edit"></i> Chỉnh sửa hồ sơ cá nhân
+                    </button>
+
+                    <button type="submit" id="btnSave" class="btn-save-profile" style="display:none;">
+                        <i class="fas fa-save"></i> Lưu thay đổi
+                    </button>   
+                    
+                    <div class="button-row">
+                        <a href="/" class="btn-home-back">
+                            <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+                        </a>
+                        <a href="@Url.Action("Logout", "Account")" class="btn-logout-profile">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </form> </div>
+</div>
+
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function enableEditMode() {
+        document.querySelectorAll('input:not([type="password"])').forEach(i => i.disabled = false);
+
+        const avatarContainer = document.querySelector('.avatar-upload-container');
+        avatarContainer.classList.remove('disabled-avatar');
+
+        document.getElementById('passwordSection').style.display = 'block';
+
+        document.getElementById('btnEdit').style.display = 'none';
+        document.getElementById('btnSave').style.display = 'flex';
+    }
+</script>
+
+<style>
+    .profile-page-wrapper { 
+        display: flex; justify-content: center; align-items: center; padding: 60px 20px; background-color: #f4f7f5; min-height: 80vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .profile-card { 
+        background: #ffffff; width: 100%; max-width: 550px; border-radius: 16px; box-shadow: 0 10px 30px rgba(25, 135, 84, 0.08); overflow: hidden; border: 1px solid rgba(25, 135, 84, 0.1); 
+    }
+    .profile-card-header { 
+        background: linear-gradient(135deg, #198754 0%, #146c43 100%); padding: 35px 20px 25px 20px; text-align: center; color: #ffffff; 
+    }
+    .profile-card-header h3 { margin: 10px 0 5px 0; font-weight: 600; font-size: 1.4rem; }
+    .profile-card-header .subtitle { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.9); display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .text-warning-custom { color: #ffc107; font-size: 0.7rem; }
+    
+    .avatar-upload-container { 
+        position: relative; width: 110px; height: 110px; margin: 0 auto; border-radius: 50%; border: 4px solid rgba(255, 255, 255, 0.6); overflow: hidden; cursor: pointer; transition: all 0.3s ease; 
+    }
+    .avatar-upload-container:hover { border-color: #ffffff; transform: scale(1.03); }
+    .user-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+    .avatar-upload-container:hover .avatar-overlay { opacity: 1; }
+    .avatar-overlay i { color: #fff; font-size: 1.5rem; }
+
+    .profile-card-body { padding: 30px 35px; }
+    .section-title { font-size: 1.05rem; font-weight: 600; color: #333; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px; border-left: 4px solid #198754; padding-left: 10px; }
+    .custom-input-group { margin-bottom: 18px; }
+    .custom-input-group label { display: block; font-size: 0.85rem; font-weight: 500; color: #555; margin-bottom: 6px; text-align: left; }
+    .input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
+    .input-icon { position: absolute; left: 14px; color: #198754; font-size: 0.95rem; }
+    .input-wrapper input { width: 100%; padding: 11px 12px 11px 40px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; transition: all 0.2s ease; color: #333; }
+    .input-wrapper input:focus { border-color: #198754; box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15); }
+    
+    .password-change-section { background-color: #f9fbf9; padding: 20px; border-radius: 10px; border: 1px dashed rgba(25, 135, 84, 0.2); margin: 25px 0; }
+    
+    .alert-box { padding: 12px 15px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    .profile-action-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    .button-row { display: flex; gap: 12px; width: 100%; }
+    
+    .btn-save-profile, .btn-home-back, .btn-logout-profile { 
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: all 0.2s ease; cursor: pointer; text-align: center; box-sizing: border-box;
+    }
+    
+    .btn-save-profile { background-color: #198754; color: #ffffff; border: none; width: 100%; }
+    .btn-save-profile:hover { background-color: #146c43; transform: translateY(-1px); }
+    
+    .btn-home-back { background-color: #f8f9fa; color: #495057; border: 1px solid #ced4da; flex: 1; }
+    .btn-home-back:hover { background-color: #e2e6ea; color: #212529; }
+    
+    .btn-logout-profile { background-color: #fff5f5; color: #e03131; border: 1px solid #ffc9c9; flex: 1; }
+    .btn-logout-profile:hover { background-color: #ffe3e3; color: #c92a2a; }
+
+    .btn-edit-profile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 12px;
+        background-color: #ffffff;
+        border: 2px solid #198754;
+        color: #198754;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .btn-edit-profile:hover {
+        background-color: #198754;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(25, 135, 84, 0.2);
+    }
+
+    .btn-edit-profile:active {
+        background-color: #146c43;
+        transform: translateY(0);
+    }
+
+    .avatar-upload-container.disabled-avatar {
+        cursor: default;
+    }
+
+    .avatar-upload-container.disabled-avatar:hover {
+        transform: none;
+    }
+
+    .avatar-upload-container.disabled-avatar:hover .avatar-overlay {
+        opacity: 0;
+    }
+</style>

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<HealthyFoodOrdering.Models.NutritionCombo>
+@{
+    ViewData["Title"] = "Quản lý Combo (Admin)";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc layout Admin riêng nếu có
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between mb-4">
+        <h2>Quản lý Combos</h2>
+        <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Tạo Combo mới</a>
+    </div>
+
+    <table class="table table-hover align-middle shadow-sm bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên Combo</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><img src="@item.ImageUrl" style="width:60px; height:60px; object-fit:cover;" class="rounded" /></td>
+                    <td>@item.ComboName</td>
+                    <td>@item.TotalPrice.ToString("N0") VNĐ</td>
+                    <td>@(item.IsActive ? "Hiển thị" : "Ẩn")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,213 @@
+﻿@model HealthyFoodOrdering.Models.Order
+
+@{
+    ViewData["Title"] = "Thanh toán QR";
+
+    string transferContent =
+        $"HEALTHYFOOD{Model.Id}";
+
+    string qrUrl =
+        $"https://img.vietqr.io/image/{ViewBag.BankCode}-{ViewBag.AccountNumber}-compact2.png?amount={Model.TotalAmount}&addInfo={transferContent}&accountName={ViewBag.AccountName}";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card qr-card shadow-lg border-0">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        <h2 class="fw-bold text-success">
+                            Thanh toán đơn hàng
+                        </h2>
+
+                        <p class="text-muted">
+                            Quét mã QR để thanh toán
+                        </p>
+
+                        <div class="countdown-box">
+
+                            Hết hạn sau:
+
+                            <span id="countdown">
+                                15:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-warning">
+
+                        <strong>
+                            Trạng thái:
+                        </strong>
+
+                        Chờ khách hàng chuyển khoản
+
+                    </div>
+
+                    <div class="text-center">
+
+                        <img src="@qrUrl"
+                             class="img-fluid qr-image" />
+
+                    </div>
+
+                    <div class="bank-info mt-4">
+
+                        <div class="bank-row">
+
+                            <span>Ngân hàng</span>
+
+                            <strong>
+                                @ViewBag.BankName
+                            </strong>
+
+                        </div>
+
+                        <div class="bank-row">
+
+                            <span>Số tài khoản</span>
+
+                            <strong>
+                                @ViewBag.AccountNumber
+                            </strong>
+
+                        </div>
+
+                        <div class="bank-row">
+
+                            <span>Chủ tài khoản</span>
+
+                            <strong>
+                                @ViewBag.AccountName
+                            </strong>
+
+                        </div>
+
+                        <div class="bank-row">
+
+                            <span>Số tiền</span>
+
+                            <strong class="text-danger">
+                                @Model.TotalAmount.ToString("N0") VNĐ
+                            </strong>
+
+                        </div>
+
+                        <div class="bank-row">
+
+                            <span>Nội dung CK</span>
+
+                            <strong class="text-primary">
+                                @transferContent
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+
+                        <strong>Lưu ý:</strong>
+
+                        Chuyển đúng số tiền và đúng nội dung để hệ thống xác nhận nhanh hơn.
+
+                    </div>
+
+                    <form asp-action="ConfirmTransfer"
+                          method="post">
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.Id" />
+
+                        <button type="submit"
+                                class="btn btn-success btn-lg w-100">
+
+                            Tôi đã chuyển khoản
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<style>
+
+    .qr-card {
+        border-radius: 20px;
+    }
+
+    .qr-image {
+        width: 280px;
+    }
+
+    .bank-info {
+        background: #f8fafc;
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .bank-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+        .bank-row:last-child {
+            border-bottom: none;
+        }
+
+    .btn-success {
+        height: 55px;
+        font-weight: 700;
+    }
+
+    .countdown-box {
+        background: #fff7ed;
+        color: #c2410c;
+        padding: 12px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+</style>
+
+<script>
+
+    let time = 900;
+
+    setInterval(() => {
+
+        let min =
+            Math.floor(time / 60);
+
+        let sec =
+            time % 60;
+
+        document.getElementById("countdown")
+            .innerText =
+            `${min}:${sec.toString().padStart(2,'0')}`;
+
+        if(time > 0)
+            time--;
+
+    },1000);
+
+</script>

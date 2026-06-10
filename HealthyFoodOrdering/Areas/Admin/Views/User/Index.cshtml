@@ -1,0 +1,121 @@
+﻿@model IEnumerable<HealthyFoodOrdering.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Quản Lý Người Dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+
+            <h4 class="m-0 fw-bold text-success">
+                <i class="fas fa-users me-2"></i>
+                Quản Lý Người Dùng
+            </h4>
+
+            <span class="badge total-user-badge">
+                Total: @Model.Count() Users
+            </span>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th class="ps-4">Avatar</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Created</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+
+                                <td class="ps-4">
+
+                                    @if (!string.IsNullOrEmpty(user.Avatar))
+                                    {
+                                        <img src="/images/avatars/@user.Avatar"
+                                             class="rounded-circle border"
+                                             style="width:50px;height:50px;object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle text-secondary"
+                                           style="font-size:40px;"></i>
+                                    }
+
+                                </td>
+
+                                <td class="fw-bold">
+                                    @user.FullName
+                                </td>
+
+                                <td>
+                                    @user.Email
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrEmpty(user.PhoneNumber)
+                                        ? "Not updated"
+                                        : user.PhoneNumber)
+                                </td>
+
+                                <td>
+                                    @user.CreatedDate.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
+                                    <span class="badge user-active-badge rounded-pill px-3 py-2">
+                                        <i class="fas fa-circle-check me-1"></i> Active
+                                    </span>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+    .total-user-badge {
+        background: #2f7d4f;
+        color: white;
+        font-size: 14px;
+        padding: 10px 15px;
+        border-radius: 10px;
+    }
+
+    .user-active-badge {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+        font-weight: 600;
+    }
+</style>

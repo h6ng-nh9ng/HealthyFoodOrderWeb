@@ -1,0 +1,288 @@
+﻿@{
+    Layout = null;
+}
+@model HealthyFoodOrdering.Models.LoginVM
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - Dinh Dưỡng Xanh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <style>
+            .input-group {
+                position: relative;
+            }
+
+                .input-group label {
+                    max-width: 60%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition: all 0.3s ease;
+                    pointer-events: none;
+                }
+                    .input-group input:-webkit-autofill ~ label,
+                    .input-group input:focus ~ label,
+                    .input-group label.active {
+                        top: -10px !important;
+                        font-size: 12px !important;
+                        color: #198754 !important;
+                        background-color: #ffffff !important;
+                        padding: 0 5px !important;
+                    }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+        
+            <div class="form-container" id="loginSection">
+                <h2><span class="brand-name">🌿 Healthy Food</span></h2>
+                <p class="subtitle">Ăn gì thì đặt</p>
+
+                @if (ViewData["LoginError"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @ViewData["LoginError"]
+                    </div>
+                }
+
+                <style>
+                    .alert-danger {
+						background-color: #fce8e8; 
+                        color: #c5221f;
+                        padding: 12px;
+                        border-radius: 6px;
+                        border: 1px solid #f5c6cb;
+                        margin-bottom: 15px;
+                        font-size: 0.9rem;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .alert-danger i {
+                        margin-right: 8px;
+                    }
+
+                    .validation-summary-errors ul {
+                        list-style: none;
+                        padding: 0;
+                        margin: 0;
+                    }
+
+                    .validation-summary-errors li::before {
+                        content: "\f071";
+                        font-family: "Font Awesome 6 Free";
+                        margin-right: 8px;
+                        font-weight: 900;
+                    }
+                </style>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success text-center py-2 fw-bold mb-3" style="border-radius: 5px; color: #155724; background-color: #d4edda; border-color: #c3e6cb; font-size:0.9rem;">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger text-center py-2 fw-bold mb-3" style="border-radius: 5px; color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; font-size:0.9rem;">
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <form asp-controller="Account" asp-action="Login" method="post" id="loginForm">
+                    <div class="input-group">
+                        <input type="email" id="email" name="Email" required placeholder=" " class="form-control-input" />
+                        <label for="email" id="label-email">Email của bạn</label>
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="password" name="Password" required placeholder=" " class="form-control-input" />
+                        <label for="password" id="label-password">Mật khẩu</label>
+                        <i class="fas fa-eye-slash toggle-password" id="togglePassword" style="cursor: pointer;"></i>
+                        <span class="error-message" id="passwordError"></span>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="RememberMe" value="true" /> <span>Ghi nhớ tôi</span>
+                        </label>
+                        <a href="#" class="forgot-pass" id="toForgot">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">Đăng Nhập</button>
+                </form>
+                <p class="register-link">
+                    Chưa có tài khoản? <a href="#" id="toRegister">Đăng ký ngay</a>
+                </p>
+            </div>
+
+            <div class="form-container hidden" id="registerSection">
+                <h2>Tạo tài khoản mới</h2>
+                <p class="subtitle">Bắt đầu hành trình dinh dưỡng của bạn</p>
+
+                @if (ViewData["RegisterError"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @ViewData["RegisterError"]
+                    </div>
+                }
+
+                <form asp-controller="Account" asp-action="Register" method="post" id="registerForm">
+                    <div class="input-group">
+                        <input type="text" id="regName" name="FullName" required placeholder=" " class="form-control-input" />
+                        <label for="regName" id="label-regName">Họ và tên</label>
+                        <span class="error-message" id="regNameError"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" id="regEmail" name="Email" required placeholder=" " class="form-control-input" />
+                        <label for="regEmail" id="label-regEmail">Email</label>
+                        <span class="error-message" id="regEmailError"></span>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" id="regPassword" name="Password" required placeholder=" " class="form-control-input" />
+                        <label for="regPassword" id="label-regPassword">Mật khẩu (tối thiểu 6 ký tự)</label>
+                        <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" style="cursor: pointer;"></i>
+                        <span class="error-message" id="regPasswordError"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login">Đăng Ký</button>
+                </form>
+                <p class="register-link">
+                    Đã có tài khoản? <a href="#" id="toLogin">Đăng nhập ngay</a>
+                </p>
+            </div>
+
+            <div class="form-container hidden" id="forgotSection">
+                <h2>Khôi phục <span class="brand-name">Mật khẩu</span></h2>
+                <p class="subtitle">Nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu</p>
+
+                <form id="forgotForm">
+                    <div class="input-group">
+                        <input type="email" id="forgotEmail" required placeholder=" " class="form-control-input" />
+                        <label for="forgotEmail" id="label-forgotEmail">Email đã đăng ký</label>
+                        <span class="error-message" id="forgotEmailError"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login">Gửi yêu cầu</button>
+                </form>
+                <p class="register-link">
+                    <a href="#" id="forgotToLogin">Quay lại Đăng nhập</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const loginSection = document.getElementById("loginSection");
+                const registerSection = document.getElementById("registerSection");
+                const forgotSection = document.getElementById("forgotSection");
+
+                // --- HÀM KIỂM TRA INPUT ĐỂ THU NHỎ LABEL LÊN TRÊN ---
+                function checkInputValues() {
+                    const inputs = document.querySelectorAll('.form-control-input');
+                    inputs.forEach(input => {
+                        const label = input.nextElementSibling;
+                        if (label && label.tagName === 'LABEL') {
+                            // Nếu ô nhập có dữ liệu (hoặc do Autofill) thì ép label thu nhỏ lên trên
+                            if (input.value.length > 0 || input.matches(':-webkit-autofill')) {
+                                label.classList.add('active');
+                            } else {
+                                label.classList.remove('active');
+                            }
+                        }
+                    });
+                }
+
+                // Chạy kiểm tra liên tục khi load trang và sau 500ms (chờ trình duyệt Autofill)
+                checkInputValues();
+                setTimeout(checkInputValues, 400);
+                setTimeout(checkInputValues, 800);
+
+                // Lắng nghe sự kiện người dùng gõ chữ hoặc thay đổi dữ liệu
+                document.querySelectorAll('.form-control-input').forEach(item => {
+                    item.addEventListener('input', checkInputValues);
+                    item.addEventListener('change', checkInputValues);
+                    item.addEventListener('blur', checkInputValues);
+                });
+
+
+                // 1. Kiểm tra tham số URL khi bấm Register từ Header truyền sang
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('tab') === 'register') {
+                    if (loginSection && registerSection) {
+                        loginSection.classList.add("hidden");
+                        registerSection.classList.remove("hidden");
+                    }
+                }
+
+                // 2. Click chuyển từ Đăng nhập ➔ Đăng ký
+                document.getElementById("toRegister")?.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    loginSection.classList.add("hidden");
+                    registerSection.classList.remove("hidden");
+                    setTimeout(checkInputValues, 50);
+                });
+
+                // 3. Click chuyển từ Đăng ký ➔ Đăng nhập ngược lại
+                document.getElementById("toLogin")?.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    registerSection.classList.add("hidden");
+                    loginSection.classList.remove("hidden");
+                    setTimeout(checkInputValues, 50);
+                });
+
+                // 4. Click chuyển từ Đăng nhập ➔ Quên mật khẩu
+                document.getElementById("toForgot")?.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    loginSection.classList.add("hidden");
+                    forgotSection.classList.remove("hidden");
+                    setTimeout(checkInputValues, 50);
+                });
+
+                // 5. Click từ Quên mật khẩu ➔ Quay lại Đăng nhập
+                document.getElementById("forgotToLogin")?.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    forgotSection.classList.add("hidden");
+                    loginSection.classList.remove("hidden");
+                    setTimeout(checkInputValues, 50);
+                });
+
+                // 6. XỬ LÝ CON MẮT FORM ĐĂNG NHẬP
+                const togglePassword = document.getElementById("togglePassword");
+                const passwordInput = document.getElementById("password");
+            
+                togglePassword?.addEventListener("click", function () {
+                    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                    passwordInput.setAttribute("type", type);
+                    this.classList.toggle("fa-eye");
+                    this.classList.toggle("fa-eye-slash");
+                });
+
+                // 7. XỬ LÝ CON MẮT FORM ĐĂNG KÝ
+                const toggleRegPassword = document.getElementById("toggleRegPassword");
+                const regPasswordInput = document.getElementById("regPassword");
+            
+                toggleRegPassword?.addEventListener("click", function () {
+                    const type = regPasswordInput.getAttribute("type") === "password" ? "text" : "password";
+                    regPasswordInput.setAttribute("type", type);
+                    this.classList.toggle("fa-eye");
+                    this.classList.toggle("fa-eye-slash");
+                });
+            });
+    </script>
+</body>
+</html>
