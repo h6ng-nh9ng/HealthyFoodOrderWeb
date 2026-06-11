@@ -47,10 +47,11 @@
                         </span>
                     }
 
-                    <img src="@combo.ImageUrl"
+                    <img src="@Url.Content("~/" + (combo.ImageUrl ?? "images/placeholder-combo.jpg").TrimStart('/'))"
                          class="card-img-top rounded-top-4"
                          alt="@combo.ComboName"
-                         style="height:220px; object-fit:cover;">
+                         style="height:220px; object-fit:cover;"
+                         onerror="this.onerror=null; this.src='/images/placeholder-combo.jpg';">
 
                     <div class="card-body d-flex flex-column">
 

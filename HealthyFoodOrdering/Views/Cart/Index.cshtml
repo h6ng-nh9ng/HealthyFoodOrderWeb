@@ -1,54 +1,182 @@
 ﻿@model List<HealthyFoodOrdering.Models.CartItem>
-<div class="container mt-4">
-    <h2>Giỏ hàng của bạn</h2>
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info">Giỏ hàng trống. <a asp-controller="Home" asp-action="Index">Quay lại mua sắm!</a></div>
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .bg-healthy-cream {
+        background-color: #fcfbfa;
     }
-    else
-    {
-        <table class="table table-bordered align-middle text-center">
-            <thead class="table-light">
-                <tr>
-                    <th>Hình ảnh</th>
-                    <th>Sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td><img src="@item.ImageUrl" style="width:60px; height:60px; object-fit:cover; border-radius:5px;" /></td>
-                        <td class="text-start">
-                            <strong>@(item.Type == "Combo" ? item.ComboName : item.ProductName)</strong>
-                            <br /><small class="text-muted">Loại: @item.Type</small>
-                        </td>
-                        <td>@item.Price.ToString("N0") VNĐ</td>
-                        <td>
-                            <form asp-action="UpdateQuantity" method="post" class="d-inline-flex gap-1">
-                                <input type="hidden" name="id" value="@(item.Type == "Combo" ? item.ComboId : item.ProductId)" />
-                                <input type="hidden" name="type" value="@item.Type" />
-                                <input type="number" name="quantity" value="@item.Quantity" min="1"
-                                       class="form-control form-control-sm text-center" style="width:80px;"
-                                       onchange="this.form.submit()" />
-                            </form>
-                        </td>
-                        <td class="fw-bold text-success">@item.Total.ToString("N0") VNĐ</td>
-                        <td>
-                            <a asp-action="Remove" asp-route-id="@(item.Type == "Combo" ? item.ComboId : item.ProductId)"
-                               asp-route-type="@item.Type" class="btn btn-danger btn-sm">Xóa</a>
-                        </td>
-                    </tr>
-                } 
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <h4>Tổng tiền: <span class="text-danger">@Model.Sum(x => x.Total).ToString("N0") VNĐ</span></h4>
-            <a asp-controller="Checkout" asp-action="Index" class="btn btn-success btn-lg">Tiến hành thanh toán</a>
+
+    .text-healthy-green {
+        color: #1e4620;
+    }
+
+    .btn-healthy-green {
+        background-color: #1e4620;
+        border-color: #1e4620;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+        .btn-healthy-green:hover {
+            background-color: #143016;
+            border-color: #143016;
+            color: #fff;
+        }
+
+    .btn-outline-healthy {
+        color: #1e4620;
+        border-color: #1e4620;
+    }
+
+        .btn-outline-healthy:hover {
+            background-color: #1e4620;
+            color: #fff;
+        }
+
+    .cart-table th {
+        background-color: #1e4620 !important;
+        color: white !important;
+        font-weight: 500;
+    }
+
+    .product-img-container {
+        width: 65px;
+        height: 65px;
+        overflow: hidden;
+        border: 1px solid #eae8e5;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="card shadow-sm border-0 rounded-4 bg-healthy-cream p-4 p-md-5">
+
+        <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+            <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3 text-healthy-green">
+                <i class="fas fa-shopping-cart fa-2x"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold m-0 text-healthy-green">Giỏ Hàng Của Bạn</h2>
+                <small class="text-muted">Quản lý các bữa ăn dinh dưỡng đã chọn</small>
+            </div>
         </div>
-    }
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center py-5">
+                <div class="mb-3 text-muted" style="font-size: 3rem;">
+                    <i class="fas fa-basket-shopping"></i>
+                </div>
+                <p class="fs-5 text-muted">Giỏ hàng của bạn đang trống.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-healthy-green px-4 py-2 rounded-pill fw-medium">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại mua sắm!
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive rounded-3 shadow-sm bg-white mb-4">
+                <table class="table cart-table align-middle text-center m-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Hình ảnh</th>
+                            <th class="text-start">Sản phẩm / Combo</th>
+                            <th>Giá</th>
+                            <th style="width: 130px;">Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th style="width: 100px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            // Sửa lỗi mất ảnh: Tự động chuẩn hóa đường dẫn ảnh, nếu null/rỗng thì dùng ảnh mặc định
+                            var rawImgUrl = string.IsNullOrEmpty(item.ImageUrl) ? "/images/default-food.jpg" : item.ImageUrl;
+                            var finalImgUrl = rawImgUrl.StartsWith("/") ? rawImgUrl : "/" + rawImgUrl;
+
+                            <tr>
+                                <td>
+                                    <div class="product-img-container rounded-3 mx-auto">
+                                        <img src="@finalImgUrl"
+                                             style="width: 100%; height: 100%; object-fit: cover;"
+                                             onerror="this.onerror=null; this.src='/images/default-food.jpg';" />
+                                    </div>
+                                </td>
+
+                                <td class="text-start">
+                                    <h6 class="fw-bold text-dark mb-1">
+                                        @(item.Type == "Combo" ? item.ComboName : item.ProductName)
+                                    </h6>
+                                    @if (item.Type == "Combo")
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2.5 py-1 fs-7">
+                                            <i class="fas fa-cubes me-1"></i>Combo Dinh Dưỡng
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2.5 py-1 fs-7">
+                                            <i class="fas fa-apple-whole me-1"></i>Món Lẻ
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="fw-medium text-secondary">
+                                    @item.Price.ToString("N0") VNĐ
+                                </td>
+
+                                <td>
+                                    <form asp-action="UpdateQuantity" method="post" class="d-inline-flex justify-content-center align-items-center">
+                                        <input type="hidden" name="id" value="@(item.Type == "Combo" ? item.ComboId : item.ProductId)" />
+                                        <input type="hidden" name="type" value="@item.Type" />
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1"
+                                               class="form-control form-control-sm text-center border-secondary border-opacity-25 rounded-3"
+                                               style="width: 70px; height: 35px;"
+                                               onchange="this.form.submit()" />
+                                    </form>
+                                </td>
+
+                                <td class="fw-bold text-healthy-green">
+                                    @item.Total.ToString("N0") VNĐ
+                                </td>
+
+                                <td>
+                                    <a asp-action="Remove"
+                                       asp-route-id="@(item.Type == "Combo" ? item.ComboId : item.ProductId)"
+                                       asp-route-type="@item.Type"
+                                       class="btn btn-outline-danger btn-sm rounded-circle d-inline-flex align-items-center justify-content-center"
+                                       style="width: 32px; height: 32px; padding: 0;"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa mục này khỏi giỏ hàng?')">
+                                        <i class="fas fa-trash-alt fs-7"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row align-items-center justify-content-between mt-4 pt-3 border-top g-3">
+                <div class="col-md-6 text-center text-md-start">
+                    <h4 class="fw-bold mb-0 text-dark">
+                        Tổng thanh toán:
+                        <span class="text-danger ms-2 fw-extrabold">@Model.Sum(x => x.Total).ToString("N0") VNĐ</span>
+                    </h4>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex gap-2 justify-content-center justify-content-md-end">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-healthy px-4 py-2 rounded-pill fw-medium">
+                            <i class="fas fa-chevron-left me-1"></i> Tiếp tục mua sắm
+                        </a>
+                        <a asp-controller="Checkout" asp-action="Index" class="btn btn-healthy-green px-4 py-2 rounded-pill fw-medium shadow-sm">
+                            Tiến hành thanh toán <i class="fas fa-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

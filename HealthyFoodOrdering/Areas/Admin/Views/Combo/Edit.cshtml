@@ -1,26 +1,187 @@
 ﻿@model HealthyFoodOrdering.Models.NutritionCombo
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Combo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .bg-healthy-cream {
+        background-color: #fcfbfa;
+    }
+
+    .text-healthy-green {
+        color: #1e4620;
+    }
+
+    .btn-healthy-submit {
+        background-color: #1e4620;
+        border-color: #1e4620;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+        .btn-healthy-submit:hover {
+            background-color: #143016;
+            border-color: #143016;
+            color: #fff;
+        }
+
+    .product-scroll-container {
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: #fff;
+        border: 1px solid #e0ddda;
+    }
+
+        .product-scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .product-scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .product-scroll-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+    .product-item-row {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f5f4f2;
+    }
+
+        .product-item-row:hover {
+            background-color: #f4f6f4;
+        }
+
+    .badge-price {
+        background-color: #e8f0e9;
+        color: #1e4620;
+        font-weight: 600;
+    }
+</style>
+
 <div class="container py-5">
-    <h2 class="mb-4">Chỉnh sửa Combo</h2>
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="Id" />
-        <div class="mb-3">
-            <label>Tên Combo</label>
-            <input asp-for="ComboName" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label>Sản phẩm trong Combo</label>
-            <div class="border p-3 rounded" style="max-height: 200px; overflow-y: auto;">
-                @foreach (var p in ViewBag.Products)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="selectedProducts" value="@p.Id"
-                        @(Model.ComboDetails.Any(cd => cd.ProductId == p.Id) ? "checked" : "")>
-                        <label class="form-check-label">@p.Name</label>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0 rounded-4 bg-healthy-cream">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                        <div class="bg-warning bg-opacity-10 p-2 rounded-3 me-3 text-healthy-green">
+                            <i class="fas fa-edit fa-2x"></i>
+                        </div>
+                        <div>
+                            <h2 class="fw-bold m-0 text-healthy-green">Chỉnh Sửa Combo</h2>
+                            <small class="text-muted">Cập nhật thông tin combo dinh dưỡng</small>
+                        </div>
                     </div>
-                }
+
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        @* ── Tên Combo ── *@
+                        <div class="form-floating mb-4">
+                            <input asp-for="ComboName"
+                                   class="form-control border-secondary border-opacity-25 rounded-3"
+                                   id="floatingComboName"
+                                   placeholder="Nhập tên combo..." />
+                            <label for="floatingComboName" class="text-muted">Tên Combo thức ăn</label>
+                            <span asp-validation-for="ComboName" class="text-danger small"></span>
+                        </div>
+
+                        @* ── ImageUrl với ảnh hiện tại + live preview ── *@
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-healthy-green mb-2">
+                                <i class="fas fa-image me-1"></i> Đường dẫn ảnh Combo:
+                            </label>
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="flex-grow-1">
+                                    <input asp-for="ImageUrl"
+                                           id="imageUrlInput"
+                                           class="form-control border-secondary border-opacity-25 rounded-3"
+                                           placeholder="/images/combos/ten-combo.png"
+                                           oninput="previewComboImage(this.value)" />
+                                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                                    <div class="text-muted mt-1" style="font-size:.78rem;">
+                                        💡 Đường dẫn từ thư mục <code>wwwroot</code>, VD:
+                                        <code>/images/combos/combo1.png</code>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 text-center">
+                                    <img id="imgPreview"
+                                         src="@Url.Content("~/" + (Model.ImageUrl ?? "images/placeholder-combo.jpg").TrimStart('/'))"
+                                         alt="Ảnh hiện tại"
+                                         style="width:90px; height:90px; object-fit:cover; border-radius:10px; border:1px solid #ddd;"
+                                         onerror="this.onerror=null; this.src='/images/placeholder-combo.jpg';">
+                                    <div class="text-muted mt-1" style="font-size:.7rem;">Ảnh hiện tại</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* ── Sản phẩm trong Combo ── *@
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-healthy-green mb-2">
+                                <i class="fas fa-list-check me-1"></i> Sản phẩm trong Combo:
+                            </label>
+                            <div class="product-scroll-container rounded-3 p-2">
+                                @if (ViewBag.Products != null)
+                                {
+                                    @foreach (var p in ViewBag.Products)
+                                    {
+                                        <div class="d-flex align-items-center justify-content-between p-2 product-item-row">
+                                            <div class="form-check m-0 flex-grow-1 py-1">
+                                                <input class="form-check-input border-secondary border-opacity-50"
+                                                       type="checkbox"
+                                                       name="selectedProducts"
+                                                       value="@p.Id"
+                                                       id="ep_@p.Id"
+                                                @(Model.ComboDetails.Any(cd => cd.ProductId == p.Id) ? "checked" : "")>
+                                                <label class="form-check-label fw-medium text-secondary-emphasis" for="ep_@p.Id">
+                                                    @p.Name
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-price px-3 py-2 rounded-pill" style="font-size:.75rem;">
+                                                    @p.Price.ToString("N0") VNĐ
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="p-3 text-center text-muted">
+                                        Không tìm thấy sản phẩm nào trong hệ thống.
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-secondary px-4 py-2 rounded-pill fw-medium">
+                                <i class="fas fa-arrow-left me-1"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-healthy-submit px-4 py-2 rounded-pill fw-medium shadow-sm">
+                                <i class="fas fa-save me-1"></i> Lưu thay đổi
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        function previewComboImage(url) {
+            const img = document.getElementById('imgPreview');
+            img.src = url && url.trim() !== '' ? url : '/images/placeholder-combo.jpg';
+        }
+    </script>
+}

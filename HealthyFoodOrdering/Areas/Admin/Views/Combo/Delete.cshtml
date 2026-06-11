@@ -1,15 +1,50 @@
 ﻿@model HealthyFoodOrdering.Models.NutritionCombo
-<div class="container py-5 text-center">
-    <h2 class="text-danger">Bạn có chắc chắn muốn xóa combo?</h2>
-    <div class="card mx-auto" style="max-width: 400px;">
-        <div class="card-body">
-            <h4>@Model.ComboName</h4>
-            <p>Giá: @Model.TotalPrice.ToString("N0") VNĐ</p>
-            <form asp-action="Delete" method="post">
-                <input type="hidden" asp-for="Id" />
-                <button type="submit" class="btn btn-danger">Xác nhận Xóa</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
-            </form>
+
+@{
+    ViewData["Title"] = "Xóa Combo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-danger shadow-sm rounded-4">
+                <div class="card-header bg-danger text-white text-center rounded-top-4 py-3">
+                    <i class="fas fa-triangle-exclamation fa-lg me-2"></i>
+                    <strong>Xác nhận xóa Combo</strong>
+                </div>
+                <div class="card-body text-center p-4">
+
+                    @* ── Ảnh combo ── *@
+                    <div class="mb-3">
+                        <img src="@Url.Content("~/" + (Model.ImageUrl ?? "images/placeholder-combo.jpg").TrimStart('/'))"
+                             alt="@Model.ComboName"
+                             style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:2px solid #f5c2c7;"
+                             onerror="this.onerror=null; this.src='/images/placeholder-combo.jpg';">
+                    </div>
+
+                    <h4 class="fw-bold text-danger mb-1">@Model.ComboName</h4>
+                    <p class="text-muted mb-1">Giá: <strong>@Model.TotalPrice.ToString("N0") VNĐ</strong></p>
+                    <p class="text-muted small mb-4">@Model.Description</p>
+
+                    <div class="alert alert-warning rounded-3 text-start small py-2">
+                        ⚠️ Hành động này <strong>không thể hoàn tác</strong>. Combo sẽ bị xóa vĩnh viễn.
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="fas fa-arrow-left me-1"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-danger rounded-pill px-4">
+                                <i class="fas fa-trash me-1"></i> Xác nhận Xóa
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

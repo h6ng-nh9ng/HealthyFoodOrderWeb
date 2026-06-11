@@ -92,6 +92,34 @@
                             <span asp-validation-for="ComboName" class="text-danger small"></span>
                         </div>
 
+                        @* ── Trường ImageUrl với live preview ── *@
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-healthy-green mb-2">
+                                <i class="fas fa-image me-1"></i> Đường dẫn ảnh Combo:
+                            </label>
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="flex-grow-1">
+                                    <input asp-for="ImageUrl"
+                                           id="imageUrlInput"
+                                           class="form-control border-secondary border-opacity-25 rounded-3"
+                                           placeholder="/images/combos/ten-combo.png"
+                                           oninput="previewComboImage(this.value)" />
+                                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                                    <div class="text-muted mt-1" style="font-size:.78rem;">
+                                        💡 Nhập đường dẫn từ thư mục <code>wwwroot</code>, VD:
+                                        <code>/images/combos/combo1.png</code>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <img id="imgPreview"
+                                         src="/images/placeholder-combo.jpg"
+                                         alt="Preview"
+                                         style="width:90px; height:90px; object-fit:cover; border-radius:10px; border:1px solid #ddd;"
+                                         onerror="this.onerror=null; this.src='/images/placeholder-combo.jpg';">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-4">
                             <label class="form-label fw-bold text-healthy-green mb-2">
                                 <i class="fas fa-list-check me-1"></i> Chọn các sản phẩm tích hợp vào Combo:
@@ -141,3 +169,12 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function previewComboImage(url) {
+            const img = document.getElementById('imgPreview');
+            img.src = url && url.trim() !== '' ? url : '/images/placeholder-combo.jpg';
+        }
+    </script>
+}
