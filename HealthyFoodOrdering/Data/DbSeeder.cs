@@ -116,8 +116,8 @@ namespace HealthyFoodOrdering.Data
                 GoalType="Weight Loss",
                 Featured=true,
                 SoldQuantity=30,
-                Thumbnail="/images/combos/combo1_thumb.jpg",
-                ImageUrl="/images/combos/combo1.jpg"
+                Thumbnail="/images/combos/combo1_thumb.png",
+                ImageUrl="/images/combos/combo1.png"
             },
 
             new()
@@ -132,8 +132,8 @@ namespace HealthyFoodOrdering.Data
                 GoalType="Weight Gain",
                 Featured=true,
                 SoldQuantity=25,
-                Thumbnail="/images/combos/combo2_thumb.jpg",
-                ImageUrl="/images/combos/combo2.jpg"
+                Thumbnail="/images/combos/combo2_thumb.png",
+                ImageUrl="/images/combos/combo2.png"
             },
 
             new()
@@ -148,8 +148,8 @@ namespace HealthyFoodOrdering.Data
                 GoalType="Gym",
                 Featured=true,
                 SoldQuantity=42,
-                Thumbnail="/images/combos/combo3_thumb.jpg",
-                ImageUrl="/images/combos/combo3.jpg"
+                Thumbnail="/images/combos/combo3_thumb.png",
+                ImageUrl="/images/combos/combo3.png"
             },
 
             new()
@@ -163,8 +163,8 @@ namespace HealthyFoodOrdering.Data
                 TotalFat=15,
                 GoalType="Eat Clean",
                 SoldQuantity=18,
-                Thumbnail="/images/combos/combo4_thumb.jpg",
-                ImageUrl="/images/combos/combo4.jpg"
+                Thumbnail="/images/combos/combo4_thumb.png",
+                ImageUrl="/images/combos/combo4.png"
             },
 
             new()
@@ -178,8 +178,8 @@ namespace HealthyFoodOrdering.Data
                 TotalFat=14,
                 GoalType="Diabetes",
                 SoldQuantity=12,
-                Thumbnail="/images/combos/combo5_thumb.jpg",
-                ImageUrl="/images/combos/combo5.jpg"
+                Thumbnail="/images/combos/combo5_thumb.png",
+                ImageUrl="/images/combos/combo5.png"
             }
         };
 
